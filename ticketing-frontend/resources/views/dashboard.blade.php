@@ -55,12 +55,47 @@
             <!-- DAFTAR TRANSAKSI -->
             <div class="bg-white p-6 rounded-lg shadow-md">
                 <h2 class="text-xl font-semibold mb-4 border-b pb-2">Transaksi Terakhir</h2>
-                <div class="overflow-y-auto h-64">
+                <div class="overflow-y-auto h-96">
                     @foreach($tickets as $t)
-                        <div class="mb-3 p-3 bg-gray-50 border-l-4 border-blue-500 rounded">
-                            <p class="font-bold">{{ $t['booking_code'] }} - {{ $t['passenger_name'] }}</p>
-                            <p class="text-sm text-gray-600">{{ $t['origin'] }} ➔ {{ $t['destination'] }}</p>
-                            <p class="text-xs text-gray-400">{{ $t['created_at'] }}</p>
+                        <div
+                            class="mb-4 p-4 bg-gray-50 border-l-4 {{ $t['status'] == 'cancelled' ? 'border-red-500' : 'border-blue-500' }} rounded shadow-sm">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="font-bold text-lg">{{ $t['booking_code'] }}</p>
+                                    <p class="text-sm font-medium text-gray-700">{{ $t['passenger_name'] }}</p>
+                                    <p class="text-xs text-gray-500">{{ $t['origin'] }} ➔ {{ $t['destination'] }}</p>
+                                    <p class="text-xs mt-1">Status:
+                                        <span
+                                            class="px-2 py-0.5 rounded text-white text-[10px] {{ $t['status'] == 'cancelled' ? 'bg-red-500' : 'bg-green-500' }}">
+                                            {{ strtoupper($t['status']) }}
+                                        </span>
+                                    </p>
+                                </div>
+
+                                <!-- TOMBOL AKSI -->
+                                <div class="flex flex-col space-y-2">
+                                    @if($t['status'] !== 'cancelled')
+                                        <form action="{{ route('tickets.update', $t['id']) }}" method="POST">
+                                            @csrf
+                                            @method('PUT')
+                                            <button type="submit"
+                                                class="text-xs bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 w-full text-center">
+                                                Cancel
+                                            </button>
+                                        </form>
+                                    @endif
+
+                                    <form action="{{ route('tickets.destroy', $t['id']) }}" method="POST"
+                                        onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit"
+                                            class="text-xs bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 w-full text-center">
+                                            Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                     @endforeach
                 </div>

@@ -30,4 +30,32 @@ class DashboardController extends Controller
 
         return back()->with('error', 'Gagal membeli tiket: ' . $response->json('message'));
     }
+
+    // Tambahkan di dalam class DashboardController
+
+    // Fungsi untuk Update (Contoh: Selesaikan Tiket)
+    public function updateTicket($id)
+    {
+        // Mengirim request ke TicketService
+        $response = Http::put(env('TICKET_SERVICE_URL') . "/tickets/{$id}/cancel");
+
+        if ($response->successful()) {
+            return back()->with('success', 'Status tiket berhasil diperbarui.');
+        }
+
+        return back()->with('error', 'Gagal memperbarui tiket.');
+    }
+
+    // Fungsi untuk Delete
+    public function deleteTicket($id)
+    {
+        // Catatan: Pastikan di TicketService backend kamu sudah ada route DELETE
+        $response = Http::delete(env('TICKET_SERVICE_URL') . "/tickets/{$id}");
+
+        if ($response->successful()) {
+            return back()->with('success', 'Tiket berhasil dihapus.');
+        }
+
+        return back()->with('error', 'Gagal menghapus tiket.');
+    }
 }
